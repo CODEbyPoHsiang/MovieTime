@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Time</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+    <style>
+        body {
+            font-family: arial, "Microsoft JhengHei", "微軟正黑體", sans-serif
+        }
+        
+        #outSide {
+            width: 250px;
+            background-color: #110f1333;
+            margin: 5px auto 10px;
+            position: center absolute;
+            padding: 20px;
+            height: 300px;
+            border-radius: 40px;
+            font-size: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="outSide">
+        <div>
+            <h1>電影時刻表</h1>
+        </div>
+        <br>
+        <div><label>電影院名稱</label>
+            <select id="placelist" onChange="renew(this.selectedIndex);">
+            <option disabled=disabled selected=selected>戲院選擇
+            <option>遠百威秀大戲院</option>
+            <option>老虎城威秀大戲院</option>
+            <option>台北京站威秀大戲院</option>
+         </select>
+        </div>
+        <br>
+        <div>
+            <label>上映的電影</label>
+            <select id="member">
+                <option disabled=disabled selected=selected>電影選擇
+        </select>
+        </div>
+        <br>
+
+        <div>
+            <label>請選擇日期</label>
+            <select id="Datetime"></select>
+        </div>
+        <br>
+        <br>
+
+        <div>
+            <h2><input type="button" value="前往訂票" onclick="location.href='https://www.vscinemas.com.tw/vsTicketing/ticketing/ticket.aspx'">
+            </h2>
+        </div>
+
+    </div>
+    <script>
+        //電影清單的設定，以陣列來表示
+        movieName = new Array();
+        movieName[1] = ["五月天-人生無限公司", "蝙蝠俠-全面開戰", "刺激1995"];
+        movieName[2] = ["銀魂真人版", "神劍闖江湖", "靈異教師神眉"];
+        movieName[3] = ["寄生上流", "獅子王真人版", "蜘蛛人-逃家日"];
+
+        function renew(index) {
+            for (var i = 0; i < movieName[index].length; i++)
+                member.options[i] = new Option(movieName[index][i]);
+        }
+        //先設定及宣告時間的條件值
+        var day = new Date();
+        var buyDay = day.getDay();
+        var Num = day.getDate();
+        var Year = (day.getFullYear());
+        day.setDate(1);
+        day.setDate(day.getDate() - 1);
+        day.setMonth(day.getMonth() + 1);
+        var lastDate = day.getDate();
+        var date = (day.getMonth()) + "月" + Num + "日";
+        //設定大於周二的條件(即周三、周四、周五、周六、週日)
+        //ex:週三可以看到下周二的電影時刻表，即 10-周三(buyDay:為數值)..爾後日期以此類推
+        if (buyDay > 2) {
+            for (i = 0; i < 10 - buyDay; i++) {
+                if (Num < lastDate) {
+                    date = day.getFullYear() + "年" + (day.getMonth() + 1) + "月" + Num + "日";
+                    Num = Num + 1;
+                } else {
+                    date = day.getFullYear() + "年" + (day.getMonth() + 1) + "月" + (Num - lastDate) + "日";
+                    Num = Num + 1;
+                }
+                $("#Datetime").append("<option>" + date + "</option>");
+            }
+        }
+        //若是小於周三，則設定周一及周二的條件判斷式:
+        //ex:因為周一、周二在一周中，數值小於周三，即用週三-wKday(數值)
+        if (buyDay < 3) {
+            for (i = 0; i < 3 - buyDay; i++) {
+                if (Num < lastDate) {
+                    date = day.getFullYear() + "年" + (day.getMonth() + 1) + "月" + Num + "日";
+                    Num = Num + 1;
+                } else {
+                    date = day.getFullYear() + "年" + (day.getMonth() + 1) + "月" + (Num - lastDate) + "日";
+                    Num = Num + 1;
+                }
+                $("#Datetime").append("<option>" + date + "</option>");
+            }
+        }
+    </script>
+    </div>
+</body>
+
+</html>
